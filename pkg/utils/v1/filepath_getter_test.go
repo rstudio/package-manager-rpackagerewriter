@@ -19,7 +19,7 @@ type FilePathGetterSuite struct {
 
 func (s *FilePathGetterSuite) TestGet() {
 	fpg := &V1FilePathGetter{}
-	arch := &archive.ArchiveResults{
+	arch := &archive.Results{
 		OriginalChecksum:  "012",
 		RewrittenChecksum: "123",
 	}

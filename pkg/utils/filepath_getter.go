@@ -11,8 +11,8 @@ import (
 )
 
 type FilePathGetter interface {
-	GetFilePath(outputDir string, arch *archive.ArchiveResults) string
-	GetReadmePath(outputDir string, arch *archive.ArchiveResults) string
+	GetFilePath(outputDir string, arch *archive.Results) string
+	GetReadmePath(outputDir string, arch *archive.Results) string
 }
 
 type FilePathGetterFactory interface {
@@ -22,11 +22,11 @@ type FilePathGetterFactory interface {
 type defaultFilePathGetterFactory struct{}
 type biocFilePathGetterFactory struct{}
 
-func NewFilePathGetterFactory() *defaultFilePathGetterFactory {
+func NewFilePathGetterFactory() FilePathGetterFactory {
 	return &defaultFilePathGetterFactory{}
 }
 
-func NewBiocFilePathGetterFactory() *biocFilePathGetterFactory {
+func NewBiocFilePathGetterFactory() FilePathGetterFactory {
 	return &biocFilePathGetterFactory{}
 }
 
@@ -52,14 +52,14 @@ func (f *biocFilePathGetterFactory) GetFilePathGetter(schemaVersion int) (FilePa
 	return nil, fmt.Errorf("Invalid version %d for GetFilePathGetter", schemaVersion)
 }
 
-// Used by local sources, which don't distinguish on schema versions
+// LocalSourceFilePathGetter is used by local sources, which don't distinguish on schema versions
 type LocalSourceFilePathGetter struct{}
 
-func (g *LocalSourceFilePathGetter) GetFilePath(outputDir string, arch *archive.ArchiveResults) string {
+func (g *LocalSourceFilePathGetter) GetFilePath(outputDir string, arch *archive.Results) string {
 	return filepath.Join(outputDir, arch.OriginalChecksum+".tar.gz")
 }
 
-func (g *LocalSourceFilePathGetter) GetReadmePath(outputDir string, arch *archive.ArchiveResults) string {
+func (g *LocalSourceFilePathGetter) GetReadmePath(outputDir string, arch *archive.Results) string {
 	ext := ".readme"
 	if arch.ReadmeMarkdown {
 		ext += ".md"

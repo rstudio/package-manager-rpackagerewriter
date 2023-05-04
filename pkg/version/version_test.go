@@ -16,18 +16,18 @@ type VersionSuite struct {
 }
 
 type VersionToCheck struct {
-	version_string   string
-	expected_version Version
+	versionString   string
+	expectedVersion Version
 }
 
 // Most historical `rsconnect` versions at the time these tests were created
 // (in order).
 //
 // Version `0.3.6` historically appears between `0.3.59` and `0.3.60`, but we
-// feel this is was a version ordering bug, so it's been moved into the expected
+// feel this is a version ordering bug, so it's been moved into the expected
 // position. It's very unlikely that this anomaly will ever cause a problem
 // in practice.
-var all_versions = []VersionToCheck{
+var allVersions = []VersionToCheck{
 	{"0.1", Version{"0.1", 0, 1, 0, 0, []int{0, 1}, true, nil}},
 	{"0.2", Version{"0.2", 0, 2, 0, 0, []int{0, 2}, true, nil}},
 	{"0.2.1", Version{"0.2.1", 0, 2, 1, 0, []int{0, 2, 1}, true, nil}},
@@ -166,10 +166,10 @@ func (s *VersionSuite) TestCompareNumerically() {
 }
 
 func (s *VersionSuite) TestParseVersion() {
-	for _, each := range all_versions {
-		v, err := ParseNewVersion(each.version_string)
-		s.Require().Nilf(err, "%s", each.version_string)
-		s.Require().Equalf(each.expected_version, v, "%s", each.version_string)
+	for _, each := range allVersions {
+		v, err := ParseNewVersion(each.versionString)
+		s.Require().Nilf(err, "%s", each.versionString)
+		s.Require().Equalf(each.expectedVersion, v, "%s", each.versionString)
 	}
 }
 

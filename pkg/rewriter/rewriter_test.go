@@ -4,7 +4,6 @@ package rewriter
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -25,7 +24,7 @@ type RewriterSuite struct {
 }
 
 func (s *RewriterSuite) TestNewArchiveRewriter() {
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(1)
 	s.Require().Nil(err)
@@ -41,8 +40,8 @@ func (s *RewriterSuite) TestNewArchiveRewriter() {
 }
 
 func (s *RewriterSuite) TestArchiveRewriterRewrite() {
-	dir, _ := ioutil.TempDir("", "")
-	readmeDir, err := ioutil.TempDir("", "readme")
+	dir, _ := os.MkdirTemp("", "")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(1)
 	s.Require().Nil(err)
@@ -80,8 +79,8 @@ Encoding: UTF-8
 }
 
 func (s *RewriterSuite) TestArchiveRewriterRewriteStream() {
-	dir, _ := ioutil.TempDir("", "")
-	readmeDir, err := ioutil.TempDir("", "readme")
+	dir, _ := os.MkdirTemp("", "")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(1)
 	s.Require().Nil(err)
@@ -123,9 +122,9 @@ Encoding: UTF-8
 }
 
 func (s *RewriterSuite) TestArchiveRewriterGetNoReadme() {
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	s.Require().Nil(err)
-	readmeDir, err := ioutil.TempDir("", "readme")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(1)
 	s.Require().Nil(err)
@@ -143,9 +142,9 @@ func (s *RewriterSuite) TestArchiveRewriterGetNoReadme() {
 }
 
 func (s *RewriterSuite) TestArchiveRewriterRewriteReadme() {
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	s.Require().Nil(err)
-	readmeDir, err := ioutil.TempDir("", "readme")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(2)
 	s.Require().Nil(err)
@@ -173,14 +172,14 @@ Repository: RSPM
 	// Find readme file
 	readmePath := filepath.Join(readmeDir, archive.OriginalChecksum+".readme.md")
 	s.Require().Equal(readmePath, archive.ExtractedReadmePath)
-	readme, err := ioutil.ReadFile(readmePath)
+	readme, err := os.ReadFile(readmePath)
 	s.Require().Nil(err)
 	test.TestifyGolden(string(readme), &s.Suite)
 }
 
 func (s *RewriterSuite) TestArchiveRewriterRewriteReadmeStream() {
-	dir, _ := ioutil.TempDir("", "")
-	readmeDir, err := ioutil.TempDir("", "readme")
+	dir, _ := os.MkdirTemp("", "")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(2)
 	s.Require().Nil(err)
@@ -211,15 +210,15 @@ Repository: RSPM
 	// Find readme file
 	readmePath := filepath.Join(readmeDir, archive.OriginalChecksum+".readme.md")
 	s.Require().Equal(readmePath, archive.ExtractedReadmePath)
-	readme, err := ioutil.ReadFile(readmePath)
+	readme, err := os.ReadFile(readmePath)
 	s.Require().Nil(err)
 	test.TestifyGolden(string(readme), &s.Suite)
 }
 
 func (s *RewriterSuite) TestArchiveRewriterGetReadme() {
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	s.Require().Nil(err)
-	readmeDir, err := ioutil.TempDir("", "readme")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(2)
 	s.Require().Nil(err)
@@ -232,14 +231,14 @@ func (s *RewriterSuite) TestArchiveRewriterGetReadme() {
 	// Find readme file
 	readmePath := filepath.Join(readmeDir, archive.OriginalChecksum+".readme.md")
 	s.Require().Equal(readmePath, archive.ExtractedReadmePath)
-	readme, err := ioutil.ReadFile(readmePath)
+	readme, err := os.ReadFile(readmePath)
 	s.Require().Nil(err)
 	test.TestifyGolden(string(readme), &s.Suite)
 }
 
 func (s *RewriterSuite) TestArchiveRewriterCleanup() {
-	dir, _ := ioutil.TempDir("", "")
-	readmeDir, err := ioutil.TempDir("", "readme")
+	dir, _ := os.MkdirTemp("", "")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(2)
 	s.Require().Nil(err)
@@ -249,13 +248,13 @@ func (s *RewriterSuite) TestArchiveRewriterCleanup() {
 	s.Require().ErrorContains(err, "error rewriting")
 
 	// Ensure that the output directories are empty
-	files, _ := ioutil.ReadDir(dir)
+	files, _ := os.ReadDir(dir)
 	for _, f := range files {
 		log.Printf("Found unexpected temp file %s", f.Name())
 	}
 	s.Require().Len(files, 0)
 
-	readmes, _ := ioutil.ReadDir(readmeDir)
+	readmes, _ := os.ReadDir(readmeDir)
 	for _, f := range readmes {
 		log.Printf("Found unexpected readme temp file %s", f.Name())
 	}
@@ -263,8 +262,8 @@ func (s *RewriterSuite) TestArchiveRewriterCleanup() {
 }
 
 func (s *RewriterSuite) TestArchiveRewriterStreamCleanup() {
-	dir, _ := ioutil.TempDir("", "")
-	readmeDir, err := ioutil.TempDir("", "readme")
+	dir, _ := os.MkdirTemp("", "")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(2)
 	s.Require().Nil(err)
@@ -277,13 +276,13 @@ func (s *RewriterSuite) TestArchiveRewriterStreamCleanup() {
 	s.Require().ErrorContains(err, "error rewriting")
 
 	// Ensure that the output directories are empty
-	files, _ := ioutil.ReadDir(dir)
+	files, _ := os.ReadDir(dir)
 	for _, f := range files {
 		log.Printf("Found unexpected temp file %s", f.Name())
 	}
 	s.Require().Len(files, 0)
 
-	readmes, _ := ioutil.ReadDir(readmeDir)
+	readmes, _ := os.ReadDir(readmeDir)
 	for _, f := range readmes {
 		log.Printf("Found unexpected readme temp file %s", f.Name())
 	}
@@ -291,8 +290,8 @@ func (s *RewriterSuite) TestArchiveRewriterStreamCleanup() {
 }
 
 func (s *RewriterSuite) TestArchiveRewriterRewriteBinaryTar() {
-	dir, _ := ioutil.TempDir("", "")
-	readmeDir, err := ioutil.TempDir("", "readme")
+	dir, _ := os.MkdirTemp("", "")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(1)
 	s.Require().Nil(err)
@@ -339,8 +338,8 @@ Built: R 4.2.0; x86_64-pc-linux-gnu; 2022-04-24 04:16:10 UTC; unix
 }
 
 func (s *RewriterSuite) TestArchiveRewriterRewriteBinaryTarNoDescription() {
-	dir, _ := ioutil.TempDir("", "")
-	readmeDir, err := ioutil.TempDir("", "readme")
+	dir, _ := os.MkdirTemp("", "")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(1)
 	s.Require().Nil(err)
@@ -354,8 +353,8 @@ func (s *RewriterSuite) TestArchiveRewriterRewriteBinaryTarNoDescription() {
 }
 
 func (s *RewriterSuite) TestArchiveRewriterRewriteBinaryZip() {
-	dir, _ := ioutil.TempDir("", "")
-	readmeDir, err := ioutil.TempDir("", "readme")
+	dir, _ := os.MkdirTemp("", "")
+	readmeDir, err := os.MkdirTemp("", "readme")
 	s.Require().Nil(err)
 	fpg, err := utils.NewFilePathGetterFactory().GetFilePathGetter(1)
 	s.Require().Nil(err)

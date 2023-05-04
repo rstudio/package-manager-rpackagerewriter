@@ -3,7 +3,6 @@ package utils
 
 import (
 	"io"
-	"io/ioutil"
 	"strings"
 	"testing"
 
@@ -26,7 +25,7 @@ func (s *ReaderSuite) TestEOFTeeReader() {
 	done := make(chan struct{})
 
 	checkStream := func(r io.Reader) {
-		b, err := ioutil.ReadAll(r)
+		b, err := io.ReadAll(r)
 		s.Require().Nil(err) // ReadAll doesn't return an err if == EOF
 		s.Require().Equal([]byte("whatever"), b)
 		done <- struct{}{}

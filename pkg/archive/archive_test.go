@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -56,7 +55,7 @@ func (s *ArchiveSuite) TestDescriptionRewrite() {
 	s.Require().Nil(err)
 	var m bytes.Buffer
 	_, _ = m.ReadFrom(md5File)
-	_, err = io.Copy(ioutil.Discard, md5File)
+	_, err = io.Copy(io.Discard, md5File)
 	s.Require().Nil(err)
 	test.TestifyGolden(results.Description+"\n\n"+m.String(), &s.Suite)
 }
@@ -64,7 +63,7 @@ func (s *ArchiveSuite) TestDescriptionRewrite() {
 func (s *ArchiveSuite) TestDescriptionRewriteBinaryInvalid() {
 	a := NewArchive(256, 6)
 
-	tmp, err := ioutil.TempFile("", "")
+	tmp, err := os.CreateTemp("", "")
 	s.Require().Nil(err)
 	defer func(tmp *os.File) {
 		_ = tmp.Close()
@@ -140,7 +139,7 @@ func (s *ArchiveSuite) TestDescriptionRewriteLatin1() {
 	s.Require().Nil(err)
 	var m bytes.Buffer
 	_, _ = m.ReadFrom(md5File)
-	_, err = io.Copy(ioutil.Discard, md5File)
+	_, err = io.Copy(io.Discard, md5File)
 	s.Require().Nil(err)
 	test.TestifyGolden(results.Description+"\n\n"+m.String(), &s.Suite)
 
@@ -160,7 +159,7 @@ func (s *ArchiveSuite) TestDescriptionRewriteSecondMD5() {
 	f, err := os.Open("../testdata/special/SecondMD5_2.2.2.tar.gz")
 	s.Require().Nil(err)
 
-	tarball, err := ioutil.TempFile("", "")
+	tarball, err := os.CreateTemp("", "")
 	s.Require().Nil(err)
 	defer func(name string) {
 		_ = os.Remove(name)
@@ -371,7 +370,7 @@ func (s *ArchiveSuite) TestBadChecksum() {
 	s.Require().Nil(err)
 	var m bytes.Buffer
 	_, _ = m.ReadFrom(md5File)
-	_, err = io.Copy(ioutil.Discard, md5File)
+	_, err = io.Copy(io.Discard, md5File)
 	s.Require().Nil(err)
 	test.TestifyGolden(results.Description+"\n\n"+m.String(), &s.Suite)
 
@@ -430,7 +429,7 @@ func StreamFileFromTarGzCustom(tarStream io.Reader, match func(string) bool) (st
 
 		// We want to match either exact matches or matches that are prefixed
 		// by the package name in the tar ball.
-		if (header.Typeflag == tar.TypeReg || header.Typeflag == tar.TypeRegA) && // is a plain file
+		if header.Typeflag == tar.TypeReg && // is a plain file
 			match(header.Name) {
 			return tarReader, header, nil
 		}

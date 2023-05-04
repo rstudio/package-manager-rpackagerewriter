@@ -29,7 +29,7 @@ type ZipArchive struct {
 	bufferSize int
 }
 
-func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *ArchiveResults, err error) {
+func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, err error) {
 
 	// Calculate original checksum and size
 	var szOrig int64
@@ -367,7 +367,7 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *ArchiveRes
 	// Calculate result to return. Note that there is a `defer` near the
 	// top of this function that mutates the returned results further by
 	// setting the RewrittenChecksum and RewrittenSize properties.
-	results = &ArchiveResults{
+	results = &Results{
 		OriginalSize:     szOrig,
 		OriginalChecksum: shaOrig,
 		Description:      descriptionText,

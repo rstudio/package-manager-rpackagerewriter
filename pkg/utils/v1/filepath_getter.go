@@ -9,11 +9,11 @@ import (
 
 type V1FilePathGetter struct{}
 
-func (g *V1FilePathGetter) GetFilePath(outputDir string, arch *archive.ArchiveResults) string {
+func (g *V1FilePathGetter) GetFilePath(outputDir string, arch *archive.Results) string {
 	return filepath.Join(outputDir, arch.RewrittenChecksum+".tar.gz")
 }
 
-func (g *V1FilePathGetter) GetReadmePath(outputDir string, arch *archive.ArchiveResults) string {
+func (g *V1FilePathGetter) GetReadmePath(outputDir string, arch *archive.Results) string {
 	ext := ".readme"
 	if arch.ReadmeMarkdown {
 		ext += ".md"

@@ -7,7 +7,6 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -35,7 +34,7 @@ func (s *ArchiveZipSuite) TestNewArchive() {
 func (s *ArchiveZipSuite) TestDescriptionRewriteBinaryInvalid() {
 	a := NewArchiveZip(256)
 
-	tmp, err := ioutil.TempFile("", "")
+	tmp, err := os.CreateTemp("", "")
 	s.Require().Nil(err)
 	defer func(tmp *os.File) {
 		_ = tmp.Close()
@@ -57,7 +56,7 @@ func (s *ArchiveZipSuite) TestDescriptionRewriteBinary() {
 	s.Require().Nil(err)
 
 	// Create a temporary output file
-	out, err := ioutil.TempFile("", "")
+	out, err := os.CreateTemp("", "")
 	s.Require().Nil(err)
 	defer func(name string) {
 		err := os.Remove(name)
@@ -131,7 +130,7 @@ func (s *ArchiveZipSuite) TestDescriptionRewriteLatin1() {
 	s.Require().Nil(err)
 
 	// Create a temporary output file
-	out, err := ioutil.TempFile("", "")
+	out, err := os.CreateTemp("", "")
 	s.Require().Nil(err)
 	defer func(name string) {
 		err := os.Remove(name)
@@ -189,7 +188,7 @@ func (s *ArchiveZipSuite) TestDescriptionFFEncoding() {
 	s.Require().Nil(err)
 
 	// Create a temporary output file
-	out, err := ioutil.TempFile("", "")
+	out, err := os.CreateTemp("", "")
 	s.Require().Nil(err)
 	defer func(name string) {
 		err := os.Remove(name)

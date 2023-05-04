@@ -37,7 +37,7 @@ func (s *FilePathGetterSuite) TestGet() {
 
 func (s *FilePathGetterSuite) TestGetLocal() {
 	fpg := &LocalSourceFilePathGetter{}
-	arch := &archive.ArchiveResults{
+	arch := &archive.Results{
 		OriginalChecksum:  "012",
 		RewrittenChecksum: "123",
 	}

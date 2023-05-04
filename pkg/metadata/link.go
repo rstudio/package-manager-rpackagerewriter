@@ -43,7 +43,7 @@ func (a Link) Equals(b Link) bool {
 }
 
 // hasVersion matches a link version in the format: "(<operator> <version>)".
-var hasVersion = regexp.MustCompile(`^([^\(]+)\((.+)\)$`)
+var hasVersion = regexp.MustCompile(`^([^(]+)\((.+)\)$`)
 
 // operatorMatch locates the comparison operator.
 var operatorMatch = regexp.MustCompile(`(==|<=?|>=?)?\s*(.+)`)

@@ -16,18 +16,18 @@ type ManifestVersionSuite struct {
 }
 
 type ManifestVersionToCheck struct {
-	version_string   string
-	expected_version ManifestVersion
+	versionString   string
+	expectedVersion ManifestVersion
 }
 
 // Most historical `rsconnect` versions at the time these tests were created
 // (in order).
 //
 // CRANifestVersion `0.3.6` historically appears between `0.3.59` and `0.3.60`, but we
-// feel this is was a version ordering bug, so it's been moved into the expected
+// feel this is a version ordering bug, so it's been moved into the expected
 // position. It's very unlikely that this anomaly will ever cause a problem
 // in practice.
-var all_manifest_versions = []ManifestVersionToCheck{
+var allManifestVersions = []ManifestVersionToCheck{
 	{"v2", ManifestVersion{"v2", 2, 0, 0, []int{2}, true}},
 	{"v1/1", ManifestVersion{"v1/1", 1, 1, 0, []int{1, 1}, true}},
 	{"v1/2", ManifestVersion{"v1/2", 1, 2, 0, []int{1, 2}, true}},
@@ -165,10 +165,10 @@ func (s *ManifestVersionSuite) TestCompareManifestVersionsSchemaMajor() {
 }
 
 func (s *ManifestVersionSuite) TestParseVersion() {
-	for _, each := range all_manifest_versions {
-		v, err := ParseNewManifestVersion(each.version_string)
-		s.Require().Nilf(err, "%s", each.version_string)
-		s.Require().Equalf(each.expected_version, v, "%s", each.version_string)
+	for _, each := range allManifestVersions {
+		v, err := ParseNewManifestVersion(each.versionString)
+		s.Require().Nilf(err, "%s", each.versionString)
+		s.Require().Equalf(each.expectedVersion, v, "%s", each.versionString)
 	}
 }
 

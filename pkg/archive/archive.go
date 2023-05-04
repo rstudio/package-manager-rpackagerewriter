@@ -11,7 +11,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -48,7 +47,7 @@ type Archive struct {
 	gzipLevel  int
 }
 
-type ArchiveResults struct {
+type Results struct {
 	OriginalSize      int64
 	RewrittenSize     int64
 	OriginalChecksum  string
@@ -58,7 +57,7 @@ type ArchiveResults struct {
 }
 
 type RewriteResults struct {
-	ArchiveResults
+	Results
 	RewrittenPath       string
 	ExtractedReadmePath string
 }
@@ -76,15 +75,15 @@ func (w *LenWriter) Write(p []byte) (nn int, err error) {
 // Support having a leading path segment (as some R packages have)
 var readmeRE = regexp.MustCompile(`^(?i)([^/]+/)?README(\.(txt|md))?$`)
 
-func (a *Archive) RewriteBinary(r io.Reader, w io.Writer) (results *ArchiveResults, err error) {
+func (a *Archive) RewriteBinary(r io.Reader, w io.Writer) (results *Results, err error) {
 	return a.rewrite(r, w, nil)
 }
 
-func (a *Archive) RewriteWithReadme(r io.Reader, w, wReadme io.Writer) (results *ArchiveResults, err error) {
+func (a *Archive) RewriteWithReadme(r io.Reader, w, wReadme io.Writer) (results *Results, err error) {
 	return a.rewrite(r, w, wReadme)
 }
 
-func (a *Archive) rewrite(r io.Reader, w, wReadme io.Writer) (results *ArchiveResults, err error) {
+func (a *Archive) rewrite(r io.Reader, w, wReadme io.Writer) (results *Results, err error) {
 
 	// Gzip and tar to the destination
 	//
@@ -450,7 +449,7 @@ func (a *Archive) rewrite(r io.Reader, w, wReadme io.Writer) (results *ArchiveRe
 
 	// At this point we're done with `rFileStream`, since `rHashStream` waits to read the same buffer at the same time,
 	// we need to copy the remaining bytes to /dev/null to ensure `rHashStream` reaches the end of the stream.
-	_, _ = io.Copy(ioutil.Discard, rFileStream)
+	_, _ = io.Copy(io.Discard, rFileStream)
 
 	// Wait for the original checksum calculation to complete
 	originalChecksum := <-chanCheckResult
@@ -462,7 +461,7 @@ func (a *Archive) rewrite(r io.Reader, w, wReadme io.Writer) (results *ArchiveRe
 	// Calculate result to return. Note that there is a `defer` near the
 	// top of this function that mutates the returned results further by
 	// setting the RewrittenChecksum and RewrittenSize properties.
-	results = &ArchiveResults{
+	results = &Results{
 		OriginalSize:     originalChecksum.size,
 		OriginalChecksum: originalChecksum.checksum,
 		Description:      descriptionText,
