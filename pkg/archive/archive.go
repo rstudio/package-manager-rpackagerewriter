@@ -161,11 +161,9 @@ func (a *RPackageArchive) rewrite(r io.Reader, w, wReadme io.Writer) (results *R
 	chanCheckResult := make(chan checkResult)
 	go func() {
 		// Calculate checksum
-		var origSize int64
-		var sum []byte
-		origSize, sum, err = utils.ComputeSha256Stream(rHashStream)
-		if err != nil {
-			chanCheckResult <- checkResult{"", err, 0}
+		origSize, sum, errSha := utils.ComputeSha256Stream(rHashStream)
+		if errSha != nil {
+			chanCheckResult <- checkResult{"", errSha, 0}
 		}
 		chanCheckResult <- checkResult{hex.EncodeToString(sum), nil, origSize}
 	}()
