@@ -161,7 +161,9 @@ func (a *RPackageArchive) rewrite(r io.Reader, w, wReadme io.Writer) (results *R
 	chanCheckResult := make(chan checkResult)
 	go func() {
 		// Calculate checksum
-		origSize, sum, err := utils.ComputeSha256Stream(rHashStream)
+		var origSize int64
+		var sum []byte
+		origSize, sum, err = utils.ComputeSha256Stream(rHashStream)
 		if err != nil {
 			chanCheckResult <- checkResult{"", err, 0}
 		}
@@ -487,7 +489,8 @@ func (a *RPackageArchive) GetReadme(stream io.Reader, wReadme io.Writer) (bool, 
 	var readmeMarkdown bool
 
 	for {
-		header, err := tr.Next()
+		var header *tar.Header
+		header, err = tr.Next()
 
 		if err == io.EOF {
 			break
@@ -513,7 +516,7 @@ func (a *RPackageArchive) GetReadme(stream io.Reader, wReadme io.Writer) (bool, 
 				// Reset the buffer in case we had a longer-path match first.
 				readmeBuffer.Reset()
 
-				if _, err := io.Copy(readmeBuffer, tr); err != nil {
+				if _, err = io.Copy(readmeBuffer, tr); err != nil {
 					return false, err
 				}
 			}
@@ -521,7 +524,7 @@ func (a *RPackageArchive) GetReadme(stream io.Reader, wReadme io.Writer) (bool, 
 	}
 
 	// Write the readme, if any, to the writer
-	if _, err := io.Copy(wReadme, readmeBuffer); err != nil {
+	if _, err = io.Copy(wReadme, readmeBuffer); err != nil {
 		return false, err
 	}
 
