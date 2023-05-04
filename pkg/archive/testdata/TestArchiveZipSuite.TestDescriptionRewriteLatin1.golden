@@ -1,0 +1,17 @@
+Encoding: latin1
+Package: Latin1SpecialChars
+Type: Package
+Version: 1.1.1
+Date: 2019-02-21
+Author: Some Vervé
+Maintainer: Some Vervé <some.verve@companywithoutanemail.com>
+Depends: R (>= 2.13.0)
+License: MIT
+NeedsCompilation: no
+Repository: RSPM
+Date/Publication: 2019-02-21 08:33:40
+
+
+183d409191196d7293267fd56bff7e71 *R/Sample.R
+0fda0b405d51c10df63e4dd5c86d24d7 *DESCRIPTION
+

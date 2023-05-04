@@ -1,0 +1,57 @@
+Package: bindrcpp
+Title: An 'Rcpp' Interface to Active Bindings
+Version: 0.2.2
+Date: 2018-03-29
+Authors@R: c(
+    person("Kirill", "M\u00fcller", role = c("aut", "cre"), email = "krlmlr+r@mailbox.org", comment = c(ORCID = "0000-0002-1416-3412")),
+    person("RStudio", role = "cph")
+    )
+Description: Provides an easy way to fill an environment with active bindings
+    that call a C++ function.
+License: MIT + file LICENSE
+URL: https://github.com/krlmlr/bindrcpp,
+        https://krlmlr.github.io/bindrcpp
+BugReports: https://github.com/krlmlr/bindrcpp/issues
+Imports: bindr (>= 0.1.1), Rcpp (>= 0.12.16)
+Suggests: testthat
+LinkingTo: plogr, Rcpp
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1.9000
+NeedsCompilation: yes
+Packaged: 2018-03-29 13:33:00 UTC; muelleki
+Author: Kirill Müller [aut, cre] (<https://orcid.org/0000-0002-1416-3412>),
+  RStudio [cph]
+Maintainer: Kirill Müller <krlmlr+r@mailbox.org>
+Date/Publication: 2018-03-29 14:09:09 UTC
+Built: R 4.2.0; x86_64-w64-mingw32; 2022-04-29 06:29:52 UTC; windows
+ExperimentalWindowsRuntime: ucrt
+Archs: x64
+Repository: RSPM
+
+
+f73f70ac64f78d752b9564817069cf46 *DESCRIPTION
+e35d82e697a4e551f295ee42974917de *INDEX
+d3d2f503f5c96ac395a270e7c295ec0b *LICENSE
+525ede91598b06454da56b1a2754604a *Meta/Rd.rds
+b7821046be5698799eb50ae3b77356c8 *Meta/features.rds
+14a6e1d68bbadc5dc5becc45ed19f9e6 *Meta/hsearch.rds
+ca410b25c45ac25312f67a70f5715eca *Meta/links.rds
+bdfe080304eacf617328b6790bbc2424 *Meta/nsInfo.rds
+7b3d3d85d89512bc18a41fbbffb7bb2b *Meta/package.rds
+3a9c92677932609677f9a6370d097c29 *NAMESPACE
+e815df11d6de279142b7cddd9ea598e5 *NEWS.md
+d6c68f1fe41ced6e98a766a3757313da *R/bindrcpp
+fd868a6cae8d6b2b9eeb06b11b9f3017 *R/bindrcpp.rdb
+f09f40acaf59740afe0f731e45d9563a *R/bindrcpp.rdx
+0ba640a1ae1e6afbfedf80862db04865 *help/AnIndex
+59a9cbedef2be7172d8b8b4ccfb58856 *help/aliases.rds
+f5b3fa68a064129499dd1499a1ad0207 *help/bindrcpp.rdb
+a7d0f28a3c2d0ced6c7865ae37ef7bf9 *help/bindrcpp.rdx
+e24d5dd567eed450eb6614a5aae03952 *help/paths.rds
+7c9953823b41c46055ae0cb364835c7d *html/00Index.html
+3845aef6126cf18c45937f292f23508c *html/R.css
+ebff110d87c1681eda6f30b93fa7ffde *include/bindrcpp.h
+08686924000a0f02bac2a287254ef989 *include/bindrcpp_RcppExports.h
+7b794b31e36acbd0a5061a81eb2093be *include/bindrcpp_types.h
+6b0d282c5a344c7c21721e6ca350c98a *libs/x64/bindrcpp.dll

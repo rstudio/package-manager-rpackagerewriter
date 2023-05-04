@@ -1,0 +1,20 @@
+Package: SecondMD5
+Title: SecondMD5
+Version: 2.2.2
+Author: Jádon Müller
+Maintainer: Jádon Müller
+License: BSD
+LazyData: true
+Encoding: UTF-8
+NeedsCompilation: no
+Repository: RSPM
+Date/Publication: 2018-11-15 15:03:32 UTC
+
+e6e6dcc3cdced9480ee4f21ba251fac4 *tests/testthat/test-SecondMD5.R
+a19c20ba3abe0d9015de3480334d1463 *tests/testthat/fixtures/MD5
+a0ca0f44ffdab83bba83b120f40b81d3 *tests/testthat.R
+67dae3f768de2008f9b522f0f3f94752 *R/sample.R
+2c9997191a284ae43a7d0a0752bd47d4 *DESCRIPTION
+
+186a2fa26490b7d2b08ff66547033617 *DESCRIPTION
+67dae3f768de2008f9b522f0f3f94752 *R/sample.R

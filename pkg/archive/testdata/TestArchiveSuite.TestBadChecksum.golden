@@ -1,0 +1,58 @@
+Package: MortCast
+Type: Package
+Title: Estimation and Projection of Age-Specific Mortality Rates
+Version: 2.6-1
+Date: 2021-10-15
+Author: Hana Sevcikova, Nan Li and Patrick Gerland
+Maintainer: Hana Sevcikova <hanas@uw.edu>
+Description: Age-specific mortality rates are estimated and projected using 
+    the Kannisto, Lee-Carter and related methods as described in 
+    Sevcikova et al. (2016) <doi:10.1007/978-3-319-26603-9_15>.
+License: GPL (>= 2)
+Depends: R (>= 3.5.0), wpp2017
+RoxygenNote: 7.1.1
+LazyLoad: True
+LazyData: True
+NeedsCompilation: yes
+Packaged: 2021-10-15 17:03:32 UTC; hana
+Repository: RSPM
+Date/Publication: 2021-10-15 17:40:02 UTC
+Encoding: UTF-8
+
+
+99814511ba275a31db7d6941dba935a0 *ChangeLog
+01f0bc5a4ac1bad4cdfd5eb2ac2fa9dc *DESCRIPTION
+691f0dc993c3e19d0fda23a0aef687b0 *NAMESPACE
+3d501ef73bc4517165d460e3bbb1fb54 *R/LC.R
+c3d80e678c7b38bcd862c7b759ada9c0 *R/MortCast-data.R
+ba25b68ba8fe98ccb72e3994458eec81 *R/MortCast.R
+50584e2b547df8e643119b967589ec62 *R/kannisto.R
+e64dd6e48c0cfb305330ae0df5e195d7 *R/life_table.R
+647e32a512f59998a4b4dbe2b2ceb996 *R/other_methods.R
+b135fe7ec024493f061fc8f1743e9709 *build/partial.rdb
+b228414ddd5ab6171ebfecc60a1b367a *data/LQcoef.rda
+41963c8a2ea8fff79197a779a37526f6 *data/MLT1Ylookup.rda
+c948ff84ed70c59cad28e19fd46b9612 *data/MLTlookup.rda
+1c6fc48d622433320c15565a7d29b988 *data/PMDadjcoef.rda
+a764bf97b58840d264e0bee95c106749 *data/PMDrho.rda
+4045d06ef49a9dea6f4ee7e7d32830b0 *man/LQcoef.Rd
+d34b0d08f28b2322586365d6aadf692d *man/MLTlookup.Rd
+709259e2c845dcae8e6eb75389da7e3f *man/MortCast-package.Rd
+e967d36b61c3c3a60a3fcd8e5d855ba2 *man/PMDadjcoef.Rd
+ddcec02ba7acce17a86890dce53acf5b *man/PMDrho.Rd
+d6ddf5fdf96a1bca7de73155cd2ae297 *man/cokannisto.Rd
+5747fc24b8443e02c8eae5ba3d6b191e *man/cokannisto.estimate.Rd
+6da9f6614fcd3cd30fd454e1a5492703 *man/kannisto.Rd
+39429e105fe18ba093796d860cb76b30 *man/kannisto.estimate.Rd
+5c7c682d67f0ecfc9d512af91958bff8 *man/kannisto.predict.Rd
+246bf7f8f6d6c9837646583eb30c47e8 *man/leecarter.estimate.Rd
+c8eca26c3a8ed334f7bce966df5fb6ae *man/life.table.Rd
+d52802026649be74118db6c1fa55ed71 *man/lileecarter.estimate.Rd
+54f45fb47e7c627acfde418b8ba3bad5 *man/lqgroup.Rd
+bda00840c2b6162210b53a198000ada4 *man/mltgroup.Rd
+c6dddcc500de4ad67f99610ddab30621 *man/mortcast.Rd
+db6263331f5938316cd2fcb8d8482c4a *man/mortcast.blend.Rd
+6babe74d037b86149adde13829ccc77e *man/pmdgroup.Rd
+a364462e72739d790c3cec45d3d5d437 *man/rotate.leecarter.Rd
+2cd83d4cb580e622362c5be2ec523b56 *src/functions.c
+4e1dafa2ff9e95d5696932661a4c16ef *src/init.c
