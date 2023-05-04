@@ -33,16 +33,16 @@ const (
 	encodingUTF8          = "UTF-8"
 )
 
-// Archive supports rewriting .tar.gz source packages and binaries in a single data stream while
+// RPackageArchive supports rewriting .tar.gz source packages and binaries in a single data stream while
 // (a) calculating the source and destination SHA256 checksums, (b) calculating the source and
 // destination file sizes, (c) rewriting the `DESCRIPTION` file to include the correct `Repository`
 // field, and (d) rewriting the `MD5` file with any corrections required for the updated
 // DESCRIPTION.
 //
-// IMPORTANT: If you make improvements to `Archive`, please also update `ZipArchive` in
+// IMPORTANT: If you make improvements to `RPackageArchive`, please also update `RPackageZipArchive` in
 // `archive_zip.go`. We decided to maintain the code separately since there are some
 // substantial differences in reading ZIP vs. TAR archives.
-type Archive struct {
+type RPackageArchive struct {
 	bufferSize int
 	gzipLevel  int
 }
@@ -75,15 +75,15 @@ func (w *LenWriter) Write(p []byte) (nn int, err error) {
 // Support having a leading path segment (as some R packages have)
 var readmeRE = regexp.MustCompile(`^(?i)([^/]+/)?README(\.(txt|md))?$`)
 
-func (a *Archive) RewriteBinary(r io.Reader, w io.Writer) (results *Results, err error) {
+func (a *RPackageArchive) RewriteBinary(r io.Reader, w io.Writer) (results *Results, err error) {
 	return a.rewrite(r, w, nil)
 }
 
-func (a *Archive) RewriteWithReadme(r io.Reader, w, wReadme io.Writer) (results *Results, err error) {
+func (a *RPackageArchive) RewriteWithReadme(r io.Reader, w, wReadme io.Writer) (results *Results, err error) {
 	return a.rewrite(r, w, wReadme)
 }
 
-func (a *Archive) rewrite(r io.Reader, w, wReadme io.Writer) (results *Results, err error) {
+func (a *RPackageArchive) rewrite(r io.Reader, w, wReadme io.Writer) (results *Results, err error) {
 
 	// Gzip and tar to the destination
 	//
@@ -471,7 +471,7 @@ func (a *Archive) rewrite(r io.Reader, w, wReadme io.Writer) (results *Results, 
 	return
 }
 
-func (a *Archive) GetReadme(stream io.Reader, wReadme io.Writer) (bool, error) {
+func (a *RPackageArchive) GetReadme(stream io.Reader, wReadme io.Writer) (bool, error) {
 
 	readmeBuffer := bytes.NewBuffer([]byte{})
 
@@ -548,8 +548,8 @@ func PreferredReadme(oldName, newName string) bool {
 	return b < a
 }
 
-func NewArchive(bufferSize, gzipLevel int) *Archive {
-	return &Archive{
+func NewRPackageArchive(bufferSize, gzipLevel int) *RPackageArchive {
+	return &RPackageArchive{
 		bufferSize: bufferSize,
 		gzipLevel:  gzipLevel,
 	}

@@ -12,35 +12,35 @@ import (
 	fpg "github.com/rstudio/package-manager-rewriting/pkg/utils"
 )
 
-// NewRewriteError creates a RewriteError
-func NewRewriteError(err error) RewriteError {
-	return RewriteError{error: err}
+// NewRPackageRewriteError creates a RPackageRewriteError
+func NewRPackageRewriteError(err error) RPackageRewriteError {
+	return RPackageRewriteError{error: err}
 }
 
-// RewriteError records an error during rewriting a package
-type RewriteError struct {
+// RPackageRewriteError records an error during rewriting a package
+type RPackageRewriteError struct {
 	error
 }
 
-func (r RewriteError) Error() string {
+func (r RPackageRewriteError) Error() string {
 	return r.error.Error()
 }
 
-// Is returns true if an error is a RewriteError
-func (r RewriteError) Is(err error) bool {
-	_, ok := err.(RewriteError)
+// Is returns true if an error is a RPackageRewriteError
+func (r RPackageRewriteError) Is(err error) bool {
+	_, ok := err.(RPackageRewriteError)
 	return ok
 }
 
-// ArchiveRewriter support rewriting source and binary packages
-type ArchiveRewriter interface {
+// RPackageRewriter support rewriting source and binary packages
+type RPackageRewriter interface {
 	Rewrite(fullPath string) (*archive.RewriteResults, error)
 	RewriteStream(r io.Reader, w io.Writer) (*archive.RewriteResults, error)
 	RewriteBinary(r *os.File, w io.Writer, zip bool) (*archive.RewriteResults, error)
 	GetReadme(stream io.Reader) (*archive.RewriteResults, error)
 }
 
-type archiveRewriter struct {
+type rPackageRewriter struct {
 	OutputDir       string
 	ReadmeOutputDir string
 	tempDir         string
@@ -49,9 +49,9 @@ type archiveRewriter struct {
 	gzipLevel       int
 }
 
-// NewArchiveRewriter creates a new ArchiveRewriter
-func NewArchiveRewriter(outputDir, readmeOutputDir, tempDir string, fpg fpg.FilePathGetter, bufferSize, gzipLevel int) ArchiveRewriter {
-	return &archiveRewriter{
+// NewRPackageRewriter creates a new RPackageRewriter
+func NewRPackageRewriter(outputDir, readmeOutputDir, tempDir string, fpg fpg.FilePathGetter, bufferSize, gzipLevel int) RPackageRewriter {
+	return &rPackageRewriter{
 		OutputDir:       outputDir,
 		ReadmeOutputDir: readmeOutputDir,
 		tempDir:         tempDir,
@@ -62,7 +62,7 @@ func NewArchiveRewriter(outputDir, readmeOutputDir, tempDir string, fpg fpg.File
 }
 
 // Rewrite rewrites a source package
-func (r *archiveRewriter) Rewrite(fullPath string) (*archive.RewriteResults, error) {
+func (r *rPackageRewriter) Rewrite(fullPath string) (*archive.RewriteResults, error) {
 	f, err := os.Open(fullPath)
 	if err != nil {
 		return nil, fmt.Errorf("error: could not open %s: %s", fullPath, err)
@@ -94,7 +94,7 @@ func (r *archiveRewriter) Rewrite(fullPath string) (*archive.RewriteResults, err
 	}(&err)
 
 	// Rewrite the file and save using the checksum as the filename.
-	arch := archive.NewArchive(r.bufferSize, r.gzipLevel)
+	arch := archive.NewRPackageArchive(r.bufferSize, r.gzipLevel)
 	var aResults *archive.Results
 	if aResults, err = arch.RewriteWithReadme(f, w, wReadme); err != nil {
 		return nil, fmt.Errorf("error rewriting %s: %s", w.Name(), err)
@@ -154,7 +154,7 @@ func (r *archiveRewriter) Rewrite(fullPath string) (*archive.RewriteResults, err
 }
 
 // RewriteStream rewrites a package in a single stream
-func (r *archiveRewriter) RewriteStream(reader io.Reader, w io.Writer) (*archive.RewriteResults, error) {
+func (r *rPackageRewriter) RewriteStream(reader io.Reader, w io.Writer) (*archive.RewriteResults, error) {
 	wReadme, err := os.CreateTemp(r.ReadmeOutputDir, "")
 	if err != nil {
 		return nil, fmt.Errorf("error: could not create readme temp file for stream. %s", err)
@@ -167,7 +167,7 @@ func (r *archiveRewriter) RewriteStream(reader io.Reader, w io.Writer) (*archive
 	}(&err)
 
 	// Rewrite the file and save using the checksum as the filename.
-	arch := archive.NewArchive(r.bufferSize, r.gzipLevel)
+	arch := archive.NewRPackageArchive(r.bufferSize, r.gzipLevel)
 	var aResults *archive.Results
 	if aResults, err = arch.RewriteWithReadme(reader, w, wReadme); err != nil {
 		return nil, fmt.Errorf("error rewriting stream: %s", err)
@@ -201,25 +201,25 @@ func (r *archiveRewriter) RewriteStream(reader io.Reader, w io.Writer) (*archive
 }
 
 // RewriteBinary rewrites a package binary
-func (r *archiveRewriter) RewriteBinary(file *os.File, w io.Writer, zip bool) (*archive.RewriteResults, error) {
+func (r *rPackageRewriter) RewriteBinary(file *os.File, w io.Writer, zip bool) (*archive.RewriteResults, error) {
 	var err error
 	var aResults *archive.Results
 	if zip {
-		arch := archive.NewArchiveZip(r.bufferSize)
+		arch := archive.NewRPackageZipArchive(r.bufferSize)
 		aResults, err = arch.RewriteBinary(file, w)
 	} else {
-		arch := archive.NewArchive(r.bufferSize, r.gzipLevel)
+		arch := archive.NewRPackageArchive(r.bufferSize, r.gzipLevel)
 		aResults, err = arch.RewriteBinary(file, w)
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("error rewriting stream: %w", RewriteError{error: err})
+		return nil, fmt.Errorf("error rewriting stream: %w", RPackageRewriteError{error: err})
 	}
 
 	// Require a DESCRIPTION
 	if aResults.Description == "" {
 		err = fmt.Errorf("no DESCRIPTION file found in archive")
-		return nil, fmt.Errorf("error rewriting stream: %w", RewriteError{error: err})
+		return nil, fmt.Errorf("error rewriting stream: %w", RPackageRewriteError{error: err})
 	}
 
 	return &archive.RewriteResults{
@@ -228,8 +228,8 @@ func (r *archiveRewriter) RewriteBinary(file *os.File, w io.Writer, zip bool) (*
 }
 
 // GetReadme retrieves a README from an R package
-func (r *archiveRewriter) GetReadme(stream io.Reader) (*archive.RewriteResults, error) {
-	arc := &archive.Archive{}
+func (r *rPackageRewriter) GetReadme(stream io.Reader) (*archive.RewriteResults, error) {
+	arc := &archive.RPackageArchive{}
 	results := &archive.RewriteResults{}
 
 	wReadme, err := os.CreateTemp(r.ReadmeOutputDir, "")

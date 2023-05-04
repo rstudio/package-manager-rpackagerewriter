@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-// Version represents semantic version information with each component as an int.
+// RVersion represents semantic version information with each component as an int.
 // Other types of version strings are not supported.
-type Version struct {
+type RVersion struct {
 	Raw   string
 	Major int
 	Minor int
@@ -23,24 +23,24 @@ type Version struct {
 }
 
 // String generates a string representation of the version.
-func (v Version) String() string {
+func (v RVersion) String() string {
 	return v.Raw
 }
 
 // Equals tests that this version is equivalent to another.
-func (v Version) Equals(other Version) bool {
+func (v RVersion) Equals(other RVersion) bool {
 	return v.Raw == other.Raw &&
 		v.Set == other.Set
 }
 
 // GreaterThan tests that this version is greater than another.
-func (v Version) GreaterThan(other Version) bool {
+func (v RVersion) GreaterThan(other RVersion) bool {
 	return v.Set == other.Set &&
 		CompareVersions(v, other) == 1
 }
 
 // LessThan tests that this version is greater than another.
-func (v Version) LessThan(other Version) bool {
+func (v RVersion) LessThan(other RVersion) bool {
 	return v.Set == other.Set &&
 		CompareVersions(v, other) == -1
 }
@@ -52,7 +52,7 @@ func (v Version) LessThan(other Version) bool {
 //	-1 if a < b
 //	 0 if a == b
 //	 1 if a > b
-func CompareVersions(a, b Version) int {
+func CompareVersions(a, b RVersion) int {
 	if !a.Set {
 		if !b.Set {
 			return 0
@@ -83,9 +83,9 @@ func CompareVersions(a, b Version) int {
 	}
 }
 
-// ParseNewVersion creates a Version from a string.
-func ParseNewVersion(s string) (Version, error) {
-	version := Version{Raw: s, Set: false}
+// ParseNewVersion creates a RVersion from a string.
+func ParseNewVersion(s string) (RVersion, error) {
+	version := RVersion{Raw: s, Set: false}
 	if s != "" {
 		if err := version.Parse(); err != nil {
 			return version, err
@@ -126,7 +126,7 @@ var whitespace = regexp.MustCompile(`\s`)
 // - W.X.Y-Z (last components may be separated by a hyphens)
 //
 // Each component must be integral.
-func (v *Version) Parse() error {
+func (v *RVersion) Parse() error {
 	// Separate into components
 	pieces := strings.FieldsFunc(v.Raw, func(r rune) bool {
 		return runeInSlice(r, versionSeparators)
@@ -179,7 +179,7 @@ func (v *Version) Parse() error {
 }
 
 // MarshalJSON satisfies the JSON marshalling interface.
-func (v Version) MarshalJSON() ([]byte, error) {
+func (v RVersion) MarshalJSON() ([]byte, error) {
 	if !v.Set {
 		// marshal invalid version as null
 		return []byte(`null`), nil
@@ -190,7 +190,7 @@ func (v Version) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON satisfies the JSON unmarshalling interface.
-func (v *Version) UnmarshalJSON(data []byte) error {
+func (v *RVersion) UnmarshalJSON(data []byte) error {
 	var raw string
 	if string(data) == "null" {
 		v.Set = false

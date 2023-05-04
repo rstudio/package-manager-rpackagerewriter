@@ -17,19 +17,19 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
-// ZipArchive is very similar to Archive (see `archive.go`). However, ZIP reading requires random
+// RPackageZipArchive is very similar to RPackageArchive (see `archive.go`). However, ZIP reading requires random
 // access (io.ReaderAt), so we had to create a separate util. Instead of passing a stream as `r`,
 // instead save the ZIP archive to a temporary file and then pass an `*os.File` as `r`. The file
 // will be scanned twice: once to calculate the original checksum and size, and once to rewrite
 // to the destination.
 //
-// IMPORTANT: If you make improvements to `ZipArchive`, please also update `Archive` in
+// IMPORTANT: If you make improvements to `RPackageZipArchive`, please also update `RPackageArchive` in
 // `archive.go`.
-type ZipArchive struct {
+type RPackageZipArchive struct {
 	bufferSize int
 }
 
-func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, err error) {
+func (a *RPackageZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, err error) {
 
 	// Calculate original checksum and size
 	var szOrig int64
@@ -37,7 +37,7 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 	hr := sha256.New()
 	szOrig, err = io.Copy(hr, r)
 	if err != nil {
-		err = fmt.Errorf("error copying when calculating SHA in ZipArchive.RewriteBinary: %s", err)
+		err = fmt.Errorf("error copying when calculating SHA in RPackageZipArchive.RewriteBinary: %s", err)
 		return
 	}
 	shaOrig = fmt.Sprintf("%x", hr.Sum(nil))
@@ -45,7 +45,7 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 	// Seek back to the beginning of the file
 	_, err = r.Seek(0, 0)
 	if err != nil {
-		err = fmt.Errorf("error seeking to beginning of file in ZipArchive.RewriteBinary: %s", err)
+		err = fmt.Errorf("error seeking to beginning of file in RPackageZipArchive.RewriteBinary: %s", err)
 		return
 	}
 
@@ -99,12 +99,12 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 	// Create the Zip reader
 	stat, err := r.Stat()
 	if err != nil {
-		err = fmt.Errorf("error getting file Stat() in ZipArchive.RewriteBinary: %s", err)
+		err = fmt.Errorf("error getting file Stat() in RPackageZipArchive.RewriteBinary: %s", err)
 		return
 	}
 	zr, err := zip.NewReader(r, stat.Size())
 	if err != nil {
-		err = fmt.Errorf("error opening ZIP reader in ZipArchive.RewriteBinary: %s", err)
+		err = fmt.Errorf("error opening ZIP reader in RPackageZipArchive.RewriteBinary: %s", err)
 		return
 	}
 
@@ -146,12 +146,12 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 			var zf fs.File
 			zf, err = zr.Open(header.Name)
 			if err != nil {
-				err = fmt.Errorf("error opening ZIP archive file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+				err = fmt.Errorf("error opening ZIP archive file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 				return
 			}
 			_, err = io.Copy(descInfo.buffer, zf)
 			if err != nil {
-				err = fmt.Errorf("error copying DESCRIPTION data for ZIP archive file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+				err = fmt.Errorf("error copying DESCRIPTION data for ZIP archive file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 				return
 			}
 
@@ -173,13 +173,13 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 			var zf fs.File
 			zf, err = zr.Open(header.Name)
 			if err != nil {
-				err = fmt.Errorf("error opening ZIP archive file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+				err = fmt.Errorf("error opening ZIP archive file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 				return
 			}
 
 			_, err = io.Copy(info.buffer, zf)
 			if err != nil {
-				err = fmt.Errorf("error copying MD5 file data for ZIP archive file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+				err = fmt.Errorf("error copying MD5 file data for ZIP archive file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 				return
 			}
 
@@ -195,19 +195,19 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 			var zf fs.File
 			zf, err = zr.Open(header.Name)
 			if err != nil {
-				err = fmt.Errorf("error opening ZIP archive file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+				err = fmt.Errorf("error opening ZIP archive file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 				return
 			}
 
 			var variousW io.Writer
 			variousW, err = zipw.CreateHeader(header)
 			if err != nil {
-				err = fmt.Errorf("error creating ZIP header for file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+				err = fmt.Errorf("error creating ZIP header for file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 				return
 			}
 
 			if _, err = io.Copy(variousW, zf); err != nil {
-				err = fmt.Errorf("error copying data for file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+				err = fmt.Errorf("error copying data for file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 				return
 			}
 
@@ -281,7 +281,7 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 			if toUTF {
 				reader, err = charset.NewReaderLabel(useEncoding, descReadBuffer)
 				if err != nil {
-					err = fmt.Errorf("error getting reader for encoding '%s' in ZipArchive.RewriteBinary: %s", useEncoding, err)
+					err = fmt.Errorf("error getting reader for encoding '%s' in RPackageZipArchive.RewriteBinary: %s", useEncoding, err)
 					return
 				}
 			}
@@ -290,7 +290,7 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 			descInfo.buffer.Reset()
 			_, err = io.Copy(descInfo.buffer, reader)
 			if err != nil {
-				err = fmt.Errorf("error copying DESCRIPTION data to buffer in ZipArchive.RewriteBinary: %s", err)
+				err = fmt.Errorf("error copying DESCRIPTION data to buffer in RPackageZipArchive.RewriteBinary: %s", err)
 				return
 			}
 
@@ -308,14 +308,14 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 		var descW io.Writer
 		descW, err = zipw.CreateHeader(header)
 		if err != nil {
-			err = fmt.Errorf("error creating ZIP header for DESCRIPTION file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+			err = fmt.Errorf("error creating ZIP header for DESCRIPTION file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 			return
 		}
 		// Write the contents to the ZIP writer. For the authoritative DESCRIPTION
 		// file, the buffer contains the rewritten contents. For all other
 		// buffered DESCRIPTION files, the buffer contains the original contents.
 		if _, err = io.Copy(descW, descInfo.buffer); err != nil {
-			err = fmt.Errorf("error writing DESCRIPTION data for file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+			err = fmt.Errorf("error writing DESCRIPTION data for file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 			return
 		}
 	}
@@ -344,7 +344,7 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 			info.buffer.Reset()
 			_, err = io.Copy(info.buffer, md5Buffer)
 			if err != nil {
-				err = fmt.Errorf("error copying MD5 data to buffer in ZipArchive.RewriteBinary: %s", err)
+				err = fmt.Errorf("error copying MD5 data to buffer in RPackageZipArchive.RewriteBinary: %s", err)
 				return
 			}
 			header.UncompressedSize64 = uint64(info.buffer.Len())
@@ -352,14 +352,14 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 		var md5W io.Writer
 		md5W, err = zipw.CreateHeader(header)
 		if err != nil {
-			err = fmt.Errorf("error creating ZIP header for MD5 file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+			err = fmt.Errorf("error creating ZIP header for MD5 file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 			return
 		}
 		// Write the contents to the ZIP writer. For the authoritative MD5
 		// file, the buffer contains the rewritten contents. For all other
 		// buffered MD5 files, the buffer contains the original contents.
 		if _, err = io.Copy(md5W, info.buffer); err != nil {
-			err = fmt.Errorf("error writing MD5 data for file '%s' in ZipArchive.RewriteBinary: %s", header.Name, err)
+			err = fmt.Errorf("error writing MD5 data for file '%s' in RPackageZipArchive.RewriteBinary: %s", header.Name, err)
 			return
 		}
 	}
@@ -376,8 +376,8 @@ func (a *ZipArchive) RewriteBinary(r *os.File, w io.Writer) (results *Results, e
 	return
 }
 
-func NewArchiveZip(bufferSize int) *ZipArchive {
-	return &ZipArchive{
+func NewRPackageZipArchive(bufferSize int) *RPackageZipArchive {
+	return &RPackageZipArchive{
 		bufferSize: bufferSize,
 	}
 }

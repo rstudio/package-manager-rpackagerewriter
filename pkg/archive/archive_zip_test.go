@@ -25,14 +25,14 @@ type ArchiveZipSuite struct {
 }
 
 func (s *ArchiveZipSuite) TestNewArchive() {
-	a := NewArchiveZip(256)
-	s.Require().Equal(&ZipArchive{
+	a := NewRPackageZipArchive(256)
+	s.Require().Equal(&RPackageZipArchive{
 		bufferSize: 256,
 	}, a)
 }
 
 func (s *ArchiveZipSuite) TestDescriptionRewriteBinaryInvalid() {
-	a := NewArchiveZip(256)
+	a := NewRPackageZipArchive(256)
 
 	tmp, err := os.CreateTemp("", "")
 	s.Require().Nil(err)
@@ -47,11 +47,11 @@ func (s *ArchiveZipSuite) TestDescriptionRewriteBinaryInvalid() {
 
 	var b bytes.Buffer
 	_, err = a.RewriteBinary(tmp, &b)
-	s.Require().ErrorContains(err, "error opening ZIP reader in ZipArchive.RewriteBinary: zip: not a valid zip file")
+	s.Require().ErrorContains(err, "error opening ZIP reader in RPackageZipArchive.RewriteBinary: zip: not a valid zip file")
 }
 
 func (s *ArchiveZipSuite) TestDescriptionRewriteBinary() {
-	a := NewArchiveZip(256)
+	a := NewRPackageZipArchive(256)
 	f, err := os.Open("../testdata/binaries/bindrcpp_0.2.2.zip")
 	s.Require().Nil(err)
 
@@ -125,7 +125,7 @@ func (s *ArchiveZipSuite) TestDescriptionRewriteBinary() {
 // * The DESCRIPTION is needs to retain the `Encoding: latin1`
 // * The DESCRIPTION is written using the `latin1` encoding instead of the default `UTF-8`
 func (s *ArchiveZipSuite) TestDescriptionRewriteLatin1() {
-	a := NewArchiveZip(256)
+	a := NewRPackageZipArchive(256)
 	f, err := os.Open("../testdata/special/Latin1SpecialChars_1.1.1.zip")
 	s.Require().Nil(err)
 
@@ -183,7 +183,7 @@ func (s *ArchiveZipSuite) TestDescriptionRewriteLatin1() {
 }
 
 func (s *ArchiveZipSuite) TestDescriptionFFEncoding() {
-	a := NewArchiveZip(256)
+	a := NewRPackageZipArchive(256)
 	f, err := os.Open("../testdata/ff_2.2-14.zip")
 	s.Require().Nil(err)
 

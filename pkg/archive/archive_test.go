@@ -28,15 +28,15 @@ type ArchiveSuite struct {
 }
 
 func (s *ArchiveSuite) TestNewArchive() {
-	a := NewArchive(256, 6)
-	s.Require().Equal(&Archive{
+	a := NewRPackageArchive(256, 6)
+	s.Require().Equal(&RPackageArchive{
 		bufferSize: 256,
 		gzipLevel:  6,
 	}, a)
 }
 
 func (s *ArchiveSuite) TestDescriptionRewrite() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/DT_0.4.tar.gz")
 	s.Require().Nil(err)
 
@@ -61,7 +61,7 @@ func (s *ArchiveSuite) TestDescriptionRewrite() {
 }
 
 func (s *ArchiveSuite) TestDescriptionRewriteBinaryInvalid() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 
 	tmp, err := os.CreateTemp("", "")
 	s.Require().Nil(err)
@@ -80,7 +80,7 @@ func (s *ArchiveSuite) TestDescriptionRewriteBinaryInvalid() {
 }
 
 func (s *ArchiveSuite) TestDescriptionRewriteBinary() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/binaries/bindrcpp_0.2.2.tar.gz")
 	s.Require().Nil(err)
 
@@ -98,7 +98,7 @@ func (s *ArchiveSuite) TestDescriptionRewriteBinary() {
 }
 
 func (s *ArchiveSuite) TestDescriptionRewriteBinary2() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/binaries/DT_0.23.tar.gz")
 	s.Require().Nil(err)
 
@@ -120,7 +120,7 @@ func (s *ArchiveSuite) TestDescriptionRewriteBinary2() {
 // * The DESCRIPTION is needs to retain the `Encoding: latin1`
 // * The DESCRIPTION is written using the `latin1` encoding instead of the default `UTF-8`
 func (s *ArchiveSuite) TestDescriptionRewriteLatin1() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/special/Latin1SpecialChars_1.1.1.tar.gz")
 	s.Require().Nil(err)
 
@@ -155,7 +155,7 @@ func (s *ArchiveSuite) TestDescriptionRewriteSecondMD5() {
 	// encounter the file `tests/testthat/fixtures/MD5` first; we then
 	// test to ensure that only the second MD5 file (at the package root)
 	// is rewritten even though the other one was encountered first.
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/special/SecondMD5_2.2.2.tar.gz")
 	s.Require().Nil(err)
 
@@ -207,7 +207,7 @@ func (s *ArchiveSuite) TestDescriptionRewriteSecondMD5() {
 }
 
 func (s *ArchiveSuite) TestReadmeResolution1() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/readmetest_0.2.0.tar.gz")
 	s.Require().Nil(err)
 
@@ -222,7 +222,7 @@ func (s *ArchiveSuite) TestReadmeResolution1() {
 }
 
 func (s *ArchiveSuite) TestReadmeResolutionNone() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/hasdependencies_0.2.0.tar.gz")
 	s.Require().Nil(err)
 
@@ -239,7 +239,7 @@ func (s *ArchiveSuite) TestReadmeResolutionNone() {
 
 func (s *ArchiveSuite) TestReadmeOnlyResolution() {
 	f, err := os.Open("../testdata/readmetest_0.2.0.tar.gz")
-	a := &Archive{}
+	a := &RPackageArchive{}
 	s.Require().Nil(err)
 
 	var bReadme bytes.Buffer
@@ -253,7 +253,7 @@ func (s *ArchiveSuite) TestReadmeOnlyResolution() {
 
 func (s *ArchiveSuite) TestReadmeOnlyResolutionNone() {
 	f, err := os.Open("../testdata/hasdependencies_0.2.0.tar.gz")
-	a := &Archive{}
+	a := &RPackageArchive{}
 	s.Require().Nil(err)
 
 	var bReadme bytes.Buffer
@@ -267,7 +267,7 @@ func (s *ArchiveSuite) TestReadmeOnlyResolutionNone() {
 }
 
 func (s *ArchiveSuite) TestDescriptionFFEncoding() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/ff_2.2-14.tar.gz")
 	s.Require().Nil(err)
 
@@ -301,7 +301,7 @@ func (s *ArchiveSuite) TestDescriptionChecksums() {
 
 	var b bytes.Buffer
 	var bReadme bytes.Buffer
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/DT_0.4.tar.gz")
 	s.Require().Nil(err)
 	results, err := a.RewriteWithReadme(f, &b, &bReadme)
@@ -351,7 +351,7 @@ func (s *ArchiveSuite) TestReadmePref() {
 }
 
 func (s *ArchiveSuite) TestBadChecksum() {
-	a := NewArchive(256, 6)
+	a := NewRPackageArchive(256, 6)
 	f, err := os.Open("../testdata/MortCast_2.6-1.tar.gz")
 	s.Require().Nil(err)
 
