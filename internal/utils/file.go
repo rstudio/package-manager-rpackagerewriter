@@ -1,3 +1,4 @@
+// Copyright (C) 2023 by Posit Software, PBC
 package utils
 
 import "os"
