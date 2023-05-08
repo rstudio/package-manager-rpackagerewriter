@@ -4,7 +4,7 @@ package v1
 import (
 	"path/filepath"
 
-	"github.com/rstudio/package-manager-rewriting/pkg/archive"
+	"github.com/rstudio/package-manager-rpackagerewriter/pkg/archive"
 )
 
 type V1FilePathGetter struct{}

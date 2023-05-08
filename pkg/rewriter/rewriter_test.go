@@ -11,8 +11,8 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/rstudio/package-manager-rewriting/internal/test"
-	"github.com/rstudio/package-manager-rewriting/pkg/utils"
+	"github.com/rstudio/package-manager-rpackagerewriter/internal/test"
+	"github.com/rstudio/package-manager-rpackagerewriter/pkg/utils"
 )
 
 func TestRewriterSuite(t *testing.T) {

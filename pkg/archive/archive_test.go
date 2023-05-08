@@ -16,7 +16,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/rstudio/package-manager-rewriting/internal/test"
+	"github.com/rstudio/package-manager-rpackagerewriter/internal/test"
 )
 
 func TestArchiveSuite(t *testing.T) {

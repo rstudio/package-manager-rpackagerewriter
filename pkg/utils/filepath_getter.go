@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/rstudio/package-manager-rewriting/pkg/archive"
-	"github.com/rstudio/package-manager-rewriting/pkg/utils/v1"
-	"github.com/rstudio/package-manager-rewriting/pkg/utils/v2"
+	"github.com/rstudio/package-manager-rpackagerewriter/pkg/archive"
+	"github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v1"
+	"github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v2"
 )
 
 type FilePathGetter interface {

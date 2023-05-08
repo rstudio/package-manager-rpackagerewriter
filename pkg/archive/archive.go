@@ -18,7 +18,7 @@ import (
 
 	"golang.org/x/net/html/charset"
 
-	"github.com/rstudio/package-manager-rewriting/internal/utils"
+	"github.com/rstudio/package-manager-rpackagerewriter/internal/utils"
 )
 
 const (

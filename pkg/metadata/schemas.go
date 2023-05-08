@@ -1,7 +1,7 @@
 // Copyright (C) 2023 by Posit Software, PBC
 package metadata
 
-import "github.com/rstudio/package-manager-rewriting/pkg/version"
+import "github.com/rstudio/package-manager-rpackagerewriter/pkg/version"
 
 var validSchemas = []int{
 	1,

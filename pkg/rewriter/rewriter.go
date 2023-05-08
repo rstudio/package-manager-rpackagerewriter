@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/rstudio/package-manager-rewriting/internal/utils"
-	"github.com/rstudio/package-manager-rewriting/pkg/archive"
-	fpg "github.com/rstudio/package-manager-rewriting/pkg/utils"
+	"github.com/rstudio/package-manager-rpackagerewriter/internal/utils"
+	"github.com/rstudio/package-manager-rpackagerewriter/pkg/archive"
+	fpg "github.com/rstudio/package-manager-rpackagerewriter/pkg/utils"
 )
 
 // NewRPackageRewriteError creates a RPackageRewriteError

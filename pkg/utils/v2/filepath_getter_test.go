@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/rstudio/package-manager-rewriting/pkg/archive"
+	"github.com/rstudio/package-manager-rpackagerewriter/pkg/archive"
 )
 
 func TestFilePathGetterSuite(t *testing.T) {
