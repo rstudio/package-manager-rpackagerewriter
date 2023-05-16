@@ -34,7 +34,7 @@ func (f *defaultFilePathGetterFactory) GetFilePathGetter(schemaVersion int) (Fil
 	switch schemaVersion {
 	case 1:
 		return &v1.V1FilePathGetter{}, nil
-	case 2, 3:
+	case 2, 3, 4:
 		return &v2.V2V3FilePathGetter{}, nil
 	}
 	return nil, fmt.Errorf("Invalid version %d for GetFilePathGetter", schemaVersion)
