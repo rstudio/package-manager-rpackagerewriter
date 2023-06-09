@@ -208,10 +208,10 @@ func (a *RPackageArchive) rewrite(r io.Reader, w, wReadme io.Writer) (results *R
 
 		name := header.FileInfo().Name()
 
-		// Only buffer the DESCRIPTION file if we have not found a file with
-		// that name yet, or if we find one with a shorter path than one we
-		// found earlier. This way we do not care about tar file ordering.
-		if name == "DESCRIPTION" && (descPathLen == 0 || len(header.Name) < descPathLen) {
+		// Buffer all the DESCRIPTION files we find. They will all be written
+		// at the end in the same order to avoid mutations to the gzipped output
+		// if we rewrite packages a second time.
+		if name == "DESCRIPTION" {
 			// For the read pass we want to capture only the base DESCRIPTION
 			// file.
 			// Save the header
@@ -219,13 +219,16 @@ func (a *RPackageArchive) rewrite(r io.Reader, w, wReadme io.Writer) (results *R
 				buffer: bytes.NewBuffer([]byte{}),
 				header: &(*header),
 			}
-			descPathLen = len(header.Name)
-			descPath = header.Name
 
 			_, err = io.Copy(descInfo.buffer, tr)
 			if err != nil {
 				err = fmt.Errorf("error copying description: %s", err)
 				return
+			}
+
+			if descPathLen == 0 || len(header.Name) < descPathLen {
+				descPathLen = len(header.Name)
+				descPath = header.Name
 			}
 
 			// Append to the list of buffered DESCRIPTION files
