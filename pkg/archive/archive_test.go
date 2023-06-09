@@ -47,8 +47,13 @@ func (s *ArchiveSuite) TestDescriptionRewrite() {
 
 	// Make sure we parsed the correct DESCRIPTION file.
 	s.Require().Equal("3daa96b819ca54e5fbc2c7d78cb3637982a2d44be58cea0683663b71cfc7fa19", results.OriginalChecksum)
-	s.Require().Equal("f320e15acff2a42ef6db261ff71d747245d840d00adf340a24db5e92ed0cf6ca", results.RewrittenChecksum)
-	s.Require().Equal(855386, b.Len())
+	s.Require().Equal("cde08d605826b7baaef70acf3a268601fab6d7b55e06519f1d942361408c679f", results.RewrittenChecksum)
+	s.Require().Equal(855304, b.Len())
+
+	// Back up the full buffer
+	fullBuffer := bytes.NewBuffer(b.Bytes())
+	verifyBuffer := bytes.NewBuffer(b.Bytes())
+	fullLen := fullBuffer.Len()
 
 	// Check the contents of the DESCRIPTION and MD5 files.
 	md5File, err := StreamFileFromTarGz(&b, "MD5")
@@ -58,6 +63,18 @@ func (s *ArchiveSuite) TestDescriptionRewrite() {
 	_, err = io.Copy(io.Discard, md5File)
 	s.Require().Nil(err)
 	test.TestifyGolden(results.Description+"\n\n"+m.String(), &s.Suite)
+
+	// Rewrite the bytes a second time and ensure that we get the same results
+	var b2, bReadme2 bytes.Buffer
+	results2, err := a.RewriteWithReadme(fullBuffer, &b2, &bReadme2)
+	s.Require().Nil(err)
+
+	s.Require().Equal(fullLen, b2.Len())
+	s.Require().Equal(verifyBuffer.Bytes(), b2.Bytes())
+
+	// Make sure we parsed the correct DESCRIPTION file.
+	s.Require().Equal(results.RewrittenChecksum, results2.OriginalChecksum)
+	s.Require().Equal(results2.OriginalChecksum, results2.RewrittenChecksum)
 }
 
 func (s *ArchiveSuite) TestDescriptionRewriteBinaryInvalid() {
@@ -95,6 +112,23 @@ func (s *ArchiveSuite) TestDescriptionRewriteBinary() {
 
 	// Check the contents of the DESCRIPTION
 	test.TestifyGolden(results.Description, &s.Suite)
+
+	// Back up the full buffer
+	fullBuffer := bytes.NewBuffer(b.Bytes())
+	verifyBuffer := bytes.NewBuffer(b.Bytes())
+	fullLen := fullBuffer.Len()
+
+	// Rewrite the bytes a second time and ensure that we get the same results
+	var b2 bytes.Buffer
+	results2, err := a.RewriteBinary(fullBuffer, &b2)
+	s.Require().Nil(err)
+
+	s.Require().Equal(fullLen, b2.Len())
+	s.Require().Equal(verifyBuffer.Bytes(), b2.Bytes())
+
+	// Make sure we parsed the correct DESCRIPTION file.
+	s.Require().Equal(results.RewrittenChecksum, results2.OriginalChecksum)
+	s.Require().Equal(results2.OriginalChecksum, results2.RewrittenChecksum)
 }
 
 func (s *ArchiveSuite) TestDescriptionRewriteBinary2() {
@@ -108,11 +142,28 @@ func (s *ArchiveSuite) TestDescriptionRewriteBinary2() {
 
 	// Make sure we parsed the correct DESCRIPTION file.
 	s.Require().Equal("5112b7459392834152f25d5e52073ab75f47cd1d89159dca6677fdc7294339da", results.OriginalChecksum)
-	s.Require().Equal("02f5662604de07cc36aa95870a6f85376e440f7f4ab657e3435508a8cb8f2625", results.RewrittenChecksum)
-	s.Require().Equal(1583810, b.Len())
+	s.Require().Equal("dc01f84c296802c7c825b32e74afbc772acd75408e7733fc5a647238993c5f32", results.RewrittenChecksum)
+	s.Require().Equal(1583757, b.Len())
 
 	// Check the contents of the DESCRIPTION
 	test.TestifyGolden(results.Description, &s.Suite)
+
+	// Back up the full buffer
+	fullBuffer := bytes.NewBuffer(b.Bytes())
+	verifyBuffer := bytes.NewBuffer(b.Bytes())
+	fullLen := fullBuffer.Len()
+
+	// Rewrite the bytes a second time and ensure that we get the same results
+	var b2 bytes.Buffer
+	results2, err := a.RewriteBinary(fullBuffer, &b2)
+	s.Require().Nil(err)
+
+	s.Require().Equal(fullLen, b2.Len())
+	s.Require().Equal(verifyBuffer.Bytes(), b2.Bytes())
+
+	// Make sure we parsed the correct DESCRIPTION file.
+	s.Require().Equal(results.RewrittenChecksum, results2.OriginalChecksum)
+	s.Require().Equal(results2.OriginalChecksum, results2.RewrittenChecksum)
 }
 
 // Tests rewriting a package where the DESCRIPTION uses the `latin1` character
@@ -134,6 +185,11 @@ func (s *ArchiveSuite) TestDescriptionRewriteLatin1() {
 	s.Require().Equal("5cb60050250cd113192c767ca366e642648e2b308d3a581403e1a428f9258cc7", results.RewrittenChecksum)
 	s.Require().Equal(679, b.Len())
 
+	// Back up the full buffer
+	fullBuffer := bytes.NewBuffer(b.Bytes())
+	verifyBuffer := bytes.NewBuffer(b.Bytes())
+	fullLen := fullBuffer.Len()
+
 	// Check the contents of the DESCRIPTION and MD5 files.
 	md5File, err := StreamFileFromTarGz(&b, "MD5")
 	s.Require().Nil(err)
@@ -143,6 +199,17 @@ func (s *ArchiveSuite) TestDescriptionRewriteLatin1() {
 	s.Require().Nil(err)
 	test.TestifyGolden(results.Description+"\n\n"+m.String(), &s.Suite)
 
+	// Rewrite the bytes a second time and ensure that we get the same results
+	var b2, bReadme2 bytes.Buffer
+	results2, err := a.RewriteWithReadme(fullBuffer, &b2, &bReadme2)
+	s.Require().Nil(err)
+
+	s.Require().Equal(fullLen, b2.Len())
+	s.Require().Equal(verifyBuffer.Bytes(), b2.Bytes())
+
+	// Make sure we parsed the correct DESCRIPTION file.
+	s.Require().Equal(results.RewrittenChecksum, results2.OriginalChecksum)
+	s.Require().Equal(results2.OriginalChecksum, results2.RewrittenChecksum)
 }
 
 // Tests rewriting a package that includes a second MD5 file. Only the root
@@ -307,7 +374,7 @@ func (s *ArchiveSuite) TestDescriptionChecksums() {
 	results, err := a.RewriteWithReadme(f, &b, &bReadme)
 	s.Require().Nil(err)
 	s.Require().Equal("3daa96b819ca54e5fbc2c7d78cb3637982a2d44be58cea0683663b71cfc7fa19", results.OriginalChecksum)
-	s.Require().Equal("f320e15acff2a42ef6db261ff71d747245d840d00adf340a24db5e92ed0cf6ca", results.RewrittenChecksum)
+	s.Require().Equal("cde08d605826b7baaef70acf3a268601fab6d7b55e06519f1d942361408c679f", results.RewrittenChecksum)
 
 	gzf, err := gzip.NewReader(&b)
 	s.Require().Nil(err)
