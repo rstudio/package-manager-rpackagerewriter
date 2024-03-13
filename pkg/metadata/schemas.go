@@ -13,6 +13,7 @@ var validSchemas = []int{
 var validBiocSchemas = []int{
 	3,
 	4,
+	5,
 }
 
 func IsValidSchema(v version.ManifestVersion) bool {

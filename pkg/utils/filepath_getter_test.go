@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/rstudio/package-manager-rpackagerewriter/pkg/archive"
-	"github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v1"
-	"github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v2"
+	v1 "github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v1"
+	v2 "github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v2"
 )
 
 func TestFilePathGetterSuite(t *testing.T) {
@@ -62,6 +62,10 @@ func (s *FilePathGetterSuite) TestGetBioc() {
 	s.Require().IsType(&v2.V2V3FilePathGetter{}, fpg)
 
 	fpg, err = fpf.GetFilePathGetter(4)
+	s.Require().Nil(err)
+	s.Require().IsType(&v2.V2V3FilePathGetter{}, fpg)
+
+	fpg, err = fpf.GetFilePathGetter(5)
 	s.Require().Nil(err)
 	s.Require().IsType(&v2.V2V3FilePathGetter{}, fpg)
 
