@@ -58,11 +58,13 @@ func (s *SchemaSuite) TestIsValidBiocSchema() {
 		{"v2", false},
 		{"v3", true},
 		{"v4", true},
+		{"v5", true},
 		{"v13", false},
 		{"1", false},
 		{"2", false},
 		{"3", true},
 		{"4", true},
+		{"5", true},
 		{"13", false},
 		{"v1/2", false},
 		{"v2/2", false},
@@ -73,6 +75,7 @@ func (s *SchemaSuite) TestIsValidBiocSchema() {
 		{"v2/2/4", false},
 		{"v3/2/4", true},
 		{"v4/2/4", true},
+		{"v5/2/4", true},
 		{"v13/2/4", false},
 	} {
 		v, err := version.ParseNewManifestVersion(test.version)

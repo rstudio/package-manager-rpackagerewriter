@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/rstudio/package-manager-rpackagerewriter/pkg/archive"
-	"github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v1"
-	"github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v2"
+	v1 "github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v1"
+	v2 "github.com/rstudio/package-manager-rpackagerewriter/pkg/utils/v2"
 )
 
 type FilePathGetter interface {
@@ -42,7 +42,7 @@ func (f *defaultFilePathGetterFactory) GetFilePathGetter(schemaVersion int) (Fil
 
 func (f *biocFilePathGetterFactory) GetFilePathGetter(schemaVersion int) (FilePathGetter, error) {
 	switch schemaVersion {
-	case 3, 4:
+	case 3, 4, 5:
 		// Bioc was originally created at parity with CRAN at version 3. Version 4 of bioc was a simple copy
 		//    of version 3 that was used to force a fresh sync so that a fix in the sync code would be picked
 		//    up. For both of these reasons, the Bioc transformer here is the same as the CRAN V2V3FilePathGetter.
